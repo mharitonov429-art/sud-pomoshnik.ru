@@ -7,6 +7,8 @@
 ## Услуги
 - [Отмена судебного приказа](https://sud-pomoshnik.ru/uslugi/otmena-sudebnogo-prikaza/): подготовка возражений и ходатайства о восстановлении срока
 - [Отмена заочного решения](https://sud-pomoshnik.ru/uslugi/otmena-zaochnogo-resheniya/): подготовка заявления об отмене
+- [Составление иска о разводе](https://sud-pomoshnik.ru/uslugi/isk-o-razvode/): исковое заявление о расторжении брака
+- [Заявление о банкротстве гражданина](https://sud-pomoshnik.ru/uslugi/bankrotstvo-grazhdanina/): подготовка заявления с приложениями
 - [Обращения к судебным приставам](https://sud-pomoshnik.ru/uslugi/obrashcheniya-k-pristavam/): жалобы, заявление о сохранении прожиточного минимума
 - [Цены и сроки](https://sud-pomoshnik.ru/ceny/)
 
@@ -21,9 +23,15 @@
 - [Заочное решение](https://sud-pomoshnik.ru/stati/zaochnoe-reshenie/)
 - [Судебные приставы](https://sud-pomoshnik.ru/stati/sudebnye-pristavy/)
 
+- [Банкротство граждан: справка](https://sud-pomoshnik.ru/stati/bankrotstvo/)
+
 ## Сервисы
 - [Какой суд мне нужен](https://sud-pomoshnik.ru/kalkulyatory/kakoj-sud/)
 
 ## Об авторе и контакты
 - [Об авторе](https://sud-pomoshnik.ru/avtor/)
 - [Контакты](https://sud-pomoshnik.ru/kontakty/)
+- [Публичная оферта](https://sud-pomoshnik.ru/oferta/)
+- [Политика](https://sud-pomoshnik.ru/politika/)
+- [Согласие](https://sud-pomoshnik.ru/soglasie/)
+- [Сайты автора и партнёров](https://sud-pomoshnik.ru/partnery/)

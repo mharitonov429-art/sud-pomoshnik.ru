@@ -1,15 +1,76 @@
 {
-  "courts": [
-    {"slug":"salavatskij-mezhrajonnyj-sud","name":"Салаватский межрайонный суд Республики Башкортостан","short":"Салаватский межрайонный суд",
-     "seats":["с. Малояз","с. Месягутово (Дуванский район)"],"districts":["salavatskij","duvanskij"],"address":null,"phone":null},
-    {"slug":"belokatajskij-mezhrajonnyj-sud","name":"Белокатайский межрайонный суд Республики Башкортостан","short":"Белокатайский межрайонный суд",
-     "seats":["с. Новобелокатай","с. Верхние Киги","с. Большеустьикинское"],"districts":["belokatajskij","kiginskij","mechetlinskij"],"address":null,"phone":null}
-  ],
-  "districts": [
-    {"slug":"salavatskij","name":"Салаватский район","center":"с. Малояз","court":"salavatskij-mezhrajonnyj-sud"},
-    {"slug":"duvanskij","name":"Дуванский район","center":"с. Месягутово","court":"salavatskij-mezhrajonnyj-sud"},
-    {"slug":"belokatajskij","name":"Белокатайский район","center":"с. Новобелокатай","court":"belokatajskij-mezhrajonnyj-sud"},
-    {"slug":"kiginskij","name":"Кигинский район","center":"с. Верхние Киги","court":"belokatajskij-mezhrajonnyj-sud"},
-    {"slug":"mechetlinskij","name":"Мечетлинский район","center":"с. Большеустьикинское","court":"belokatajskij-mezhrajonnyj-sud"}
-  ]
+ "courts": [
+  {
+   "slug": "salavatskij-mezhrajonnyj-sud",
+   "name": "Салаватский межрайонный суд Республики Башкортостан",
+   "short": "Салаватский межрайонный суд",
+   "seats": [
+    "с. Малояз",
+    "с. Месягутово (Дуванский район)"
+   ],
+   "districts": [
+    "salavatskij",
+    "duvanskij"
+   ],
+   "address": null,
+   "phone": null,
+   "contacts": [
+    "Основное здание: 452490, с. Малояз, ул. Советская, д. 60. Телефон: (34777) 2-13-07.",
+    "Постоянное судебное присутствие в с. Месягутово: 452530, ул. Игнатия Усова, д. 16. Телефон: (34798) 3-20-31.",
+    "Режим: пн–чт 09:00–18:00, пт 09:00–16:45, обед 13:00–13:45; суббота и воскресенье выходные (по сведениям официального сайта суда на 10.11.2026).",
+    "Официальный сайт: [salavatskiy.bkr.sudrf.ru](https://salavatskiy.bkr.sudrf.ru). Электронная почта: salavatskiy.bkr@sudrf.ru."
+   ]
+  },
+  {
+   "slug": "belokatajskij-mezhrajonnyj-sud",
+   "name": "Белокатайский межрайонный суд Республики Башкортостан",
+   "short": "Белокатайский межрайонный суд",
+   "seats": [
+    "с. Новобелокатай",
+    "с. Верхние Киги",
+    "с. Большеустьикинское"
+   ],
+   "districts": [
+    "belokatajskij",
+    "kiginskij",
+    "mechetlinskij"
+   ],
+   "address": null,
+   "phone": null
+  }
+ ],
+ "districts": [
+  {
+   "slug": "salavatskij",
+   "name": "Салаватский район",
+   "center": "с. Малояз",
+   "court": "salavatskij-mezhrajonnyj-sud"
+  },
+  {
+   "slug": "duvanskij",
+   "name": "Дуванский район",
+   "center": "с. Месягутово",
+   "court": "salavatskij-mezhrajonnyj-sud",
+   "answer": "Отдельного Дуванского районного суда нет с 2017 года: дела района рассматривает постоянное судебное присутствие Салаватского межрайонного суда в с. Месягутово (ул. Игнатия Усова, д. 16). Судебные приказы выносят мировые судьи участков № 1 и № 2 (ул. Сафонова, 1А).",
+   "mirovoj": "Оба участка находятся в одном здании: 452530, с. Месягутово, ул. Сафонова, 1А.\n\n| | Участок № 1 | Участок № 2 |\n|---|---|---|\n| Телефоны | (34798) 3-44-84; 3-28-92 | (34798) 3-20-34; 3-28-89 |\n| Сайт | [175.bkr.msudrf.ru](https://175.bkr.msudrf.ru) | [176.bkr.msudrf.ru](https://176.bkr.msudrf.ru) |\n\nВозражения на судебный приказ подаются мировому судье, который его вынес: номер участка указан в приказе. Апелляционные жалобы на решения мировых судей района рассматривает Салаватский межрайонный суд."
+  },
+  {
+   "slug": "belokatajskij",
+   "name": "Белокатайский район",
+   "center": "с. Новобелокатай",
+   "court": "belokatajskij-mezhrajonnyj-sud"
+  },
+  {
+   "slug": "kiginskij",
+   "name": "Кигинский район",
+   "center": "с. Верхние Киги",
+   "court": "belokatajskij-mezhrajonnyj-sud"
+  },
+  {
+   "slug": "mechetlinskij",
+   "name": "Мечетлинский район",
+   "center": "с. Большеустьикинское",
+   "court": "belokatajskij-mezhrajonnyj-sud"
+  }
+ ]
 }
