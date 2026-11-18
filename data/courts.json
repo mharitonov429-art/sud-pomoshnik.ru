@@ -1,0 +1,15 @@
+{
+  "courts": [
+    {"slug":"salavatskij-mezhrajonnyj-sud","name":"Салаватский межрайонный суд Республики Башкортостан","short":"Салаватский межрайонный суд",
+     "seats":["с. Малояз","с. Месягутово (Дуванский район)"],"districts":["salavatskij","duvanskij"],"address":null,"phone":null},
+    {"slug":"belokatajskij-mezhrajonnyj-sud","name":"Белокатайский межрайонный суд Республики Башкортостан","short":"Белокатайский межрайонный суд",
+     "seats":["с. Новобелокатай","с. Верхние Киги","с. Большеустьикинское"],"districts":["belokatajskij","kiginskij","mechetlinskij"],"address":null,"phone":null}
+  ],
+  "districts": [
+    {"slug":"salavatskij","name":"Салаватский район","center":"с. Малояз","court":"salavatskij-mezhrajonnyj-sud"},
+    {"slug":"duvanskij","name":"Дуванский район","center":"с. Месягутово","court":"salavatskij-mezhrajonnyj-sud"},
+    {"slug":"belokatajskij","name":"Белокатайский район","center":"с. Новобелокатай","court":"belokatajskij-mezhrajonnyj-sud"},
+    {"slug":"kiginskij","name":"Кигинский район","center":"с. Верхние Киги","court":"belokatajskij-mezhrajonnyj-sud"},
+    {"slug":"mechetlinskij","name":"Мечетлинский район","center":"с. Большеустьикинское","court":"belokatajskij-mezhrajonnyj-sud"}
+  ]
+}

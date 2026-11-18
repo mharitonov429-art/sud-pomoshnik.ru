@@ -1,0 +1,14 @@
+{
+  "name": "sud-pomoshnik-site",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Судпомощник: неофициальный справочник по судам Северо-Востока Башкортостана",
+  "engines": { "node": ">=20" },
+  "scripts": {
+    "build": "node build.mjs",
+    "check": "node scripts/check.mjs",
+    "serve": "node scripts/serve.mjs",
+    "test": "node build.mjs && node scripts/check.mjs"
+  }
+}

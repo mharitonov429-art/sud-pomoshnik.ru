@@ -1,0 +1,57 @@
+# .github/workflows/deploy.yml
+# Сборка сайта и выкладка на российский сервер по SSH. Выкладка раз в сутки и при каждом изменении ветки main.
+# Сборка (npm run build) сама делает ротацию ссылок на главной (сдвиг по дням) и sitemap. Не запускался на реальном репозитории.
+name: Build and deploy
+
+on:
+  push:
+    branches: [main]
+  schedule:
+    - cron: '15 0 * * *'        # 00:15 UTC = 03:15 по Москве
+  workflow_dispatch:
+
+concurrency:
+  group: deploy
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+
+
+      - name: Build and check
+        run: npm test
+
+
+      # Секреты задаются в Settings → Secrets and variables → Actions:
+      #   DEPLOY_SSH_KEY     закрытый ключ только для выкладки (не личный!)
+      #   DEPLOY_KNOWN_HOSTS строка из `ssh-keyscan -H <host>`, снятая вами заранее
+      #   DEPLOY_HOST, DEPLOY_USER
+      - name: Deploy
+        env:
+          SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+          KNOWN_HOSTS: ${{ secrets.DEPLOY_KNOWN_HOSTS }}
+          HOST: ${{ secrets.DEPLOY_HOST }}
+          USER_NAME: ${{ secrets.DEPLOY_USER }}
+        run: |
+          set -euo pipefail
+          install -m 700 -d ~/.ssh
+          printf '%s\n' "$SSH_KEY" > ~/.ssh/id_deploy
+          chmod 600 ~/.ssh/id_deploy
+          printf '%s\n' "$KNOWN_HOSTS" > ~/.ssh/known_hosts
+          SITE=/var/www/sud-pomoshnik
+          REL="$SITE/releases/$(date +%Y%m%d-%H%M%S)"
+          SSH="ssh -i $HOME/.ssh/id_deploy"
+          rsync -az -e "$SSH" --rsync-path="mkdir -p $REL && rsync" dist/ "$USER_NAME@$HOST:$REL/"
+          $SSH "$USER_NAME@$HOST" "ln -sfn $REL $SITE/public && ls -1dt $SITE/releases/* | tail -n +6 | xargs -r rm -rf"

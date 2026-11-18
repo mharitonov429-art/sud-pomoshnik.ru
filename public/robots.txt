@@ -1,0 +1,9 @@
+# robots.txt для sud-pomoshnik.ru
+User-agent: *
+Disallow: /spasibo/
+Disallow: /api/
+
+# Только для Яндекса: склеивает адреса с рекламными метками (в Google работает canonical)
+Clean-param: utm_source&utm_medium&utm_campaign&utm_term&utm_content&yclid&ysclid&gclid&fbclid /
+
+Sitemap: https://sud-pomoshnik.ru/sitemap.xml

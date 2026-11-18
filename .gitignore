@@ -1,0 +1,12 @@
+node_modules/
+dist/
+.env
+.env.*
+*.pem
+id_*
+.DS_Store
+# Не хранить в репозитории: материалы дел, документы клиентов, выгрузки с данными третьих лиц
+private/
+*.pdf
+data/crawl-state.json
+data/pages.json

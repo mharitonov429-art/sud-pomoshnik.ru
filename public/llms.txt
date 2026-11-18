@@ -1,0 +1,29 @@
+# Судпомощник
+
+> Судпомощник — частная услуга по подготовке документов для судов и судебных приставов на Северо-Востоке Республики Башкортостан (Дуванский, Салаватский, Белокатайский, Мечетлинский, Кигинский районы). Работа онлайн. Не суд и не сотрудник суда; автор — самозанятый, не адвокат.
+
+Сайт содержит справочные данные о судах и мировых участках пяти районов (адреса и телефоны проверены по официальным сайтам судов), инструкции по судебным приказам, заочным решениям и обращениям к приставам, а также сервис подбора суда по району.
+
+## Услуги
+- [Отмена судебного приказа](https://sud-pomoshnik.ru/uslugi/otmena-sudebnogo-prikaza/): подготовка возражений и ходатайства о восстановлении срока
+- [Отмена заочного решения](https://sud-pomoshnik.ru/uslugi/otmena-zaochnogo-resheniya/): подготовка заявления об отмене
+- [Обращения к судебным приставам](https://sud-pomoshnik.ru/uslugi/obrashcheniya-k-pristavam/): жалобы, заявление о сохранении прожиточного минимума
+- [Цены и сроки](https://sud-pomoshnik.ru/ceny/)
+
+## Суды и районы
+- [Суды Северо-Востока Башкортостана](https://sud-pomoshnik.ru/sudy/)
+- [Салаватский межрайонный суд (Малояз, Месягутово)](https://sud-pomoshnik.ru/sudy/salavatskij-mezhrajonnyj-sud/)
+- [Белокатайский межрайонный суд (Новобелокатай, Верхние Киги, Большеустьикинское)](https://sud-pomoshnik.ru/sudy/belokatajskij-mezhrajonnyj-sud/)
+- [Районы: куда обращаться](https://sud-pomoshnik.ru/rajony/)
+
+## Инструкции
+- [Судебный приказ](https://sud-pomoshnik.ru/stati/sudebnyj-prikaz/)
+- [Заочное решение](https://sud-pomoshnik.ru/stati/zaochnoe-reshenie/)
+- [Судебные приставы](https://sud-pomoshnik.ru/stati/sudebnye-pristavy/)
+
+## Сервисы
+- [Какой суд мне нужен](https://sud-pomoshnik.ru/kalkulyatory/kakoj-sud/)
+
+## Об авторе и контакты
+- [Об авторе](https://sud-pomoshnik.ru/avtor/)
+- [Контакты](https://sud-pomoshnik.ru/kontakty/)
