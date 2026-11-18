@@ -2,7 +2,7 @@
 import fs from 'node:fs'; import path from 'node:path'; import { fileURLToPath } from 'node:url';
 const dist = path.join(path.dirname(fileURLToPath(import.meta.url)), '..', 'dist');
 const walk = d => fs.readdirSync(d, { withFileTypes: true }).flatMap(e => e.isDirectory() ? walk(path.join(d, e.name)) : [path.join(d, e.name)]);
-const files = walk(dist), htmls = files.filter(f => f.endsWith('.html'));
+const files = walk(dist), htmls = files.filter(f => f.endsWith('.html') && !/^(yandex_|google)/.test(path.basename(f)));
 const errs = [], titles = new Map();
 const exists = u => { const p = path.join(dist, u.replace(/[?#].*$/, '')); return fs.existsSync(p) && (fs.statSync(p).isFile() || fs.existsSync(path.join(p, 'index.html'))); };
 for (const f of htmls) {
