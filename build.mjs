@@ -10,6 +10,8 @@ const site = JSON.parse(rd('data/site.json'));
 const D = JSON.parse(rd('data/courts.json'));
 const CSS = rd('src/style.css');
 const OUT = path.join(R, 'dist');
+const TODAY = process.env.BUILD_DATE || new Date(Date.now() + 3 * 3600e3).toISOString().slice(0, 10);
+const hidden = new Set();
 
 const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 const plain = s => s.replace(/\[([^\]]+)\]\([^)]+\)/g, '$1').replace(/\*\*/g, '');
@@ -52,6 +54,7 @@ for (const f of fs.readdirSync(path.join(R, 'content')).filter(f => f.endsWith('
   const fm = {};
   m[1].split('\n').forEach(l => { const i = l.indexOf(':'); if (i > 0) fm[l.slice(0, i).trim()] = l.slice(i + 1).trim(); });
   NF = fm.nofollow === 'true';
+  if (fm.publish && fm.publish > TODAY) { hidden.add(fm.url); continue; }
   const { html, faq } = md(m[2]);
   NF = false;
   pages.push({ ...fm, related: (fm.related || '').split(',').map(s => s.trim()).filter(Boolean), html, faq, index: fm.index !== 'false', file: f });
@@ -89,8 +92,9 @@ const PH = {
   districts: () => '<ul>' + D.districts.map(d => `<li><a href="/rajony/${d.slug}/">${esc(d.name)}</a> (${esc(d.center)}) — ${esc(courtBy[d.court].short)}</li>`).join('') + '</ul>',
   calc: () => '<p><label for="d"><strong>Ваш район</strong></label><br><select id="d"><option value="">Показать все районы</option>' + D.districts.map(d => `<option value="${d.slug}">${esc(d.name)}</option>`).join('') + '</select></p>' +
     D.districts.map(d => { const c = courtBy[d.court]; return `<section data-d="${d.slug}"><h3>${esc(d.name)}</h3><p>Судебный приказ: мировой судья судебного участка по месту жительства (найти участок: <a href="https://sudrf.ru/" rel="noopener">sudrf.ru</a>). Иски и заочные решения: <a href="/sudy/${c.slug}/">${esc(c.short)}</a>. Подробнее: <a href="/rajony/${d.slug}/">страница района</a>.</p></section>`; }).join(''),
+  'calc-srok': () => '<p><label for="t"><strong>Что считаем</strong></label><br><select id="t"><option value="10">Возражения на судебный приказ (10 дней)</option><option value="7">Заявление об отмене заочного решения (7 дней)</option></select></p><p><label for="r"><strong>Дата получения копии</strong></label><br><input type="date" id="r"></p><p><button type="button" id="go" class="btn">Рассчитать</button></p><div id="out" class="answer" aria-live="polite" hidden></div><noscript><p>Для расчёта нужен JavaScript. Правило: отсчёт начинается со следующего дня после получения копии, срок заканчивается в последний календарный день; если он выпал на выходной или праздник, срок переносится на ближайший рабочий день.</p></noscript>',
   'home-links': () => {
-    const pool = pages.filter(p => p.index && p.url !== '/' && p.type !== 'hub' && p.type !== 'legal' && p.nohome !== 'true').sort((a, b) => a.url.localeCompare(b.url));
+    const pool = pages.filter(p => p.index && p.url !== '/' && p.type !== 'hub' && p.type !== 'legal' && p.nohome !== 'true' && p.warn !== 'bankrot').sort((a, b) => a.url.localeCompare(b.url));
     const per = Math.min(10, pool.length), start = (day * per) % pool.length;
     return '<ul>' + Array.from({ length: per }, (_, i) => pool[(start + i) % pool.length]).map(p => `<li><a href="${p.url}">${esc(p.h1)}</a></li>`).join('') + '</ul>';
   },
@@ -108,10 +112,11 @@ function crumbs(p) {
 const fmt = d => d.split('-').reverse().join('.');
 function ld(p, cr) {
   const url = site.base + p.url, g = [];
-  const person = { '@type': 'Person', name: site.author, telephone: site.phone };
+  const person = { '@type': 'Person', name: site.author, telephone: site.phone, sameAs: [site.vk] };
   if (p.type === 'service') g.push({ '@type': 'Service', name: p.h1, description: p.description, url, provider: person, areaServed: 'Республика Башкортостан' });
   if (p.type === 'article') g.push({ '@type': 'Article', headline: p.h1, description: p.description, url, dateModified: p.lastmod, author: person, inLanguage: 'ru' });
   if (p.url === '/') g.push({ '@type': 'WebSite', name: site.name, url: site.base + '/', inLanguage: 'ru' });
+  if (p.type === 'tool' && p.url !== '/kalkulyatory/kakoj-sud/') g.push({ '@type': 'SoftwareApplication', name: p.h1, description: p.description, url, applicationCategory: 'UtilitiesApplication', operatingSystem: 'Web', inLanguage: 'ru', offers: { '@type': 'Offer', price: '0', priceCurrency: 'RUB' } });
   if (p.faq.length) g.push({ '@type': 'FAQPage', mainEntity: p.faq.filter(f => f.a).map(f => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })) });
   if (p.url !== '/') g.push({ '@type': 'BreadcrumbList', itemListElement: cr.map((c, i) => ({ '@type': 'ListItem', position: i + 1, name: c.n, item: site.base + c.u })) });
   return g.map(x => `<script type="application/ld+json">${JSON.stringify({ '@context': 'https://schema.org', ...x }).replace(/</g, '\\u003c')}</script>`).join('');
@@ -122,7 +127,7 @@ function render(p) {
   const rel = p.related.filter(u => byUrl[u]).map(u => `<li><a href="${u}">${esc(byUrl[u].h1)}</a></li>`).join('');
   const cta = (p.type === 'article' || p.type === 'service') && p.nocta !== 'true' ? `<p><a class="btn" href="tel:${site.phoneTel}">Позвонить ${site.phone}</a></p>` : '';
   const checked = p.checked ? `<p class="meta">Нормы закона сверены ${fmt(p.checked)} по открытым источникам. Перед подачей документов сверьтесь с актуальным текстом закона: справочные сведения не заменяют консультацию юриста.</p>` : '';
-  return `<!doctype html>
+  const page = `<!doctype html>
 <html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>${esc(p.title)}</title>
 <meta name="description" content="${esc(p.description)}">
@@ -143,16 +148,17 @@ ${p.faq.length || !rel ? '' : ''}${rel ? `<h2>Читайте также</h2><ul>
 ${cta}${checked}
 ${p.lastmod && p.index ? `<p class="meta">Страница обновлена ${fmt(p.lastmod)}.</p>` : ''}
 </main>
-<footer><div class="wrap"><p>${site.brand}</p><p>Информация на сайте справочная и не заменяет консультацию юриста. Исход каждого дела определяет суд.</p><p><a href="/politika/">Политика</a> · <a href="/soglasie/">Согласие</a> · <a href="/oferta/">Оферта</a> · <a href="/kontakty/">Контакты</a> · <a href="/avtor/">Об авторе</a> · <a href="/partnery/">Партнёры</a> · <a href="#cookies" id="cookie-settings">Настройки cookie</a></p></div></footer>
-${p.url === '/kalkulyatory/kakoj-sud/' ? '<script src="/calc.js" defer></script>' : ''}<script src="/analytics.js" defer></script><script src="/consent.js" defer></script>
+<footer><div class="wrap"><p>${site.brand}</p><p>Информация на сайте справочная и не заменяет консультацию юриста. Исход каждого дела определяет суд.</p><p><a href="/politika/">Политика</a> · <a href="/soglasie/">Согласие</a> · <a href="/oferta/">Оферта</a> · <a href="/kontakty/">Контакты</a> · <a href="/avtor/">Об авторе</a> · <a href="/partnery/">Партнёры</a> · <a href="https://vk.ru/sudpomoshni" rel="noopener">ВКонтакте</a> · <a href="#cookies" id="cookie-settings">Настройки cookie</a></p></div></footer>
+${p.url === '/kalkulyatory/kakoj-sud/' ? '<script src="/calc.js" defer></script>' : ''}${p.url === '/kalkulyatory/srok-vozrazhenij/' ? '<script src="/srok.js" defer></script>' : ''}<script src="/analytics.js" defer></script><script src="/consent.js" defer></script>
 </body></html>`;
+  return page.replace(/<a href="([^"]+)"[^>]*>(.*?)<\/a>/g, (m, u, t) => (hidden.has(u) ? t : m));
 }
 
 // ---------- запись ----------
 fs.rmSync(OUT, { recursive: true, force: true });
 fs.mkdirSync(OUT, { recursive: true });
 for (const f of fs.readdirSync(path.join(R, 'public'))) fs.copyFileSync(path.join(R, 'public', f), path.join(OUT, f));
-for (const f of ['analytics.js', 'calc.js', 'consent.js']) fs.copyFileSync(path.join(R, 'src', f), path.join(OUT, f));
+for (const f of ['analytics.js', 'calc.js', 'consent.js', 'srok.js']) fs.copyFileSync(path.join(R, 'src', f), path.join(OUT, f));
 for (const p of pages) {
   const file = p.url === '/404/' ? path.join(OUT, '404.html') : path.join(OUT, p.url, 'index.html');
   fs.mkdirSync(path.dirname(file), { recursive: true });
@@ -161,4 +167,4 @@ for (const p of pages) {
 fs.writeFileSync(path.join(R, 'data/pages.json'), JSON.stringify(pages.filter(p => p.url !== '/404/').map(p => ({ url: p.url, lastmod: p.lastmod, index: p.index })), null, 1));
 const r = spawnSync(process.execPath, [path.join(R, 'tools/generate-sitemap.mjs'), '--pages', path.join(R, 'data/pages.json'), '--base', site.base, '--out', OUT], { stdio: 'inherit' });
 if (r.status !== 0) process.exit(r.status);
-console.log(`Готово: ${pages.length} страниц -> dist/`);
+console.log(`Готово: ${pages.length} страниц -> dist/` + (hidden.size ? ` (отложено до даты: ${hidden.size})` : ''));

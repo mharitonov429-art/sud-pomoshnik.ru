@@ -26,6 +26,7 @@
 - [Банкротство граждан: справка](https://sud-pomoshnik.ru/stati/bankrotstvo/)
 
 ## Сервисы
+- [Калькулятор срока возражений](https://sud-pomoshnik.ru/kalkulyatory/srok-vozrazhenij/)
 - [Какой суд мне нужен](https://sud-pomoshnik.ru/kalkulyatory/kakoj-sud/)
 
 ## Об авторе и контакты
