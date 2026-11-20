@@ -28,6 +28,7 @@ function md(src) {
   for (const b of src.trim().split(/\n\s*\n/)) {
     const t = b.trim(), L = t.split('\n');
     if (/^\{\{[\w-]+\}\}$/.test(t)) { out.push(t); continue; }
+    const im = t.match(/^!\[(.+)\]\(img:([\w-]+)\)$/); if (im) { out.push(`<p><img class="pic" src="/img/${im[2]}-1080.webp" srcset="/img/${im[2]}-540.webp 540w, /img/${im[2]}-1080.webp 1080w" sizes="(max-width: 600px) 100vw, 540px" width="540" height="540" alt="${esc(im[1])}" loading="lazy" decoding="async"></p>`); continue; }
     const pm = t.match(/^@@PRE(\d+)@@$/); if (pm) { out.push(`<pre>${esc(pre[+pm[1]])}</pre>`); continue; }
     if (t.startsWith('## ')) { inFaq = /Частые вопросы/.test(t); out.push(`<h2>${inline(t.slice(3))}</h2>`); continue; }
     if (t.startsWith('### ')) { out.push(`<h3>${inline(t.slice(4))}</h3>`); if (inFaq) faq.push({ q: plain(t.slice(4)), a: '' }); continue; }
@@ -113,7 +114,7 @@ const fmt = d => d.split('-').reverse().join('.');
 function ld(p, cr) {
   const url = site.base + p.url, g = [];
   const person = { '@type': 'Person', name: site.author, telephone: site.phone, sameAs: [site.vk] };
-  if (p.type === 'service') g.push({ '@type': 'Service', name: p.h1, description: p.description, url, provider: person, areaServed: 'Республика Башкортостан' });
+  if (p.type === 'service') g.push({ '@type': 'Service', name: p.h1, description: p.description, url, provider: person, areaServed: 'Республика Башкортостан', ...(p.image ? { image: `${site.base}/img/${p.image}-1080.webp` } : {}) });
   if (p.type === 'article') g.push({ '@type': 'Article', headline: p.h1, description: p.description, url, dateModified: p.lastmod, author: person, inLanguage: 'ru' });
   if (p.url === '/') g.push({ '@type': 'WebSite', name: site.name, url: site.base + '/', inLanguage: 'ru' });
   if (p.type === 'tool' && p.url !== '/kalkulyatory/kakoj-sud/') g.push({ '@type': 'SoftwareApplication', name: p.h1, description: p.description, url, applicationCategory: 'UtilitiesApplication', operatingSystem: 'Web', inLanguage: 'ru', offers: { '@type': 'Offer', price: '0', priceCurrency: 'RUB' } });
@@ -133,7 +134,7 @@ function render(p) {
 <meta name="description" content="${esc(p.description)}">
 ${p.index ? '' : '<meta name="robots" content="noindex">\n'}<link rel="canonical" href="${site.base}${p.url}">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml"><meta name="theme-color" content="#1f3a5f">
-<meta property="og:type" content="website"><meta property="og:locale" content="ru_RU"><meta property="og:title" content="${esc(p.title)}"><meta property="og:description" content="${esc(p.description)}"><meta property="og:url" content="${site.base}${p.url}">
+<meta property="og:type" content="website"><meta property="og:locale" content="ru_RU"><meta property="og:title" content="${esc(p.title)}"><meta property="og:description" content="${esc(p.description)}"><meta property="og:url" content="${site.base}${p.url}">${p.image ? `<meta property="og:image" content="${site.base}/img/${p.image}-1080.webp"><meta property="og:image:width" content="1080"><meta property="og:image:height" content="1080">` : ''}
 <style>${CSS}</style>
 ${ld(p, cr)}</head>
 <body>
@@ -157,7 +158,7 @@ ${p.url === '/kalkulyatory/kakoj-sud/' ? '<script src="/calc.js" defer></script>
 // ---------- запись ----------
 fs.rmSync(OUT, { recursive: true, force: true });
 fs.mkdirSync(OUT, { recursive: true });
-for (const f of fs.readdirSync(path.join(R, 'public'))) fs.copyFileSync(path.join(R, 'public', f), path.join(OUT, f));
+fs.cpSync(path.join(R, 'public'), OUT, { recursive: true });
 for (const f of ['analytics.js', 'calc.js', 'consent.js', 'srok.js']) fs.copyFileSync(path.join(R, 'src', f), path.join(OUT, f));
 for (const p of pages) {
   const file = p.url === '/404/' ? path.join(OUT, '404.html') : path.join(OUT, p.url, 'index.html');

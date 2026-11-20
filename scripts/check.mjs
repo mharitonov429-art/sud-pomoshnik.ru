@@ -16,6 +16,7 @@ for (const f of htmls) {
   if (is404 && !h.includes('noindex')) errs.push('404.html без noindex');
   if (/\[ЗАПОЛНИТЬ|undefined|\{\{/.test(h)) errs.push(`${rel}: остались заглушки`);
   if (titles.has(title)) errs.push(`${rel}: дубль title с ${titles.get(title)}`); titles.set(title, rel);
+  for (const m of h.matchAll(/<img\b[^>]*>/g)) { const t = m[0]; if (!/ alt="[^"]+"/.test(t) || !/ width="\d+"/.test(t) || !/ height="\d+"/.test(t)) errs.push(`${rel}: img без alt/width/height`); const s = (t.match(/ src="([^"]+)"/) || [])[1]; if (s && !exists(s)) errs.push(`${rel}: нет файла картинки ${s}`); }
   for (const m of h.matchAll(/href="(\/[^"]*)"/g)) { if (/index\.html/.test(m[1])) errs.push(`${rel}: ссылка на index.html ${m[1]}`); if (!exists(m[1])) errs.push(`${rel}: битая ссылка ${m[1]}`); }
 }
 const sm = fs.readFileSync(path.join(dist, 'sitemap.xml'), 'utf8');
