@@ -165,6 +165,9 @@ for (const p of pages) {
   fs.writeFileSync(file, render(p));
 }
 fs.writeFileSync(path.join(R, 'data/pages.json'), JSON.stringify(pages.filter(p => p.url !== '/404/').map(p => ({ url: p.url, lastmod: p.lastmod, index: p.index })), null, 1));
-const r = spawnSync(process.execPath, [path.join(R, 'tools/generate-sitemap.mjs'), '--pages', path.join(R, 'data/pages.json'), '--base', site.base, '--out', OUT], { stdio: 'inherit' });
-if (r.status !== 0) process.exit(r.status);
+// единый sitemap.xml со всеми страницами, разрешёнными к индексации
+const urls = pages.filter(p => p.index && p.url !== '/404/').sort((a, b) => a.url.localeCompare(b.url));
+fs.writeFileSync(path.join(OUT, 'sitemap.xml'), '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +
+  urls.map(p => `  <url>\n    <loc>${site.base}${p.url}</loc>\n    <lastmod>${p.lastmod || TODAY}</lastmod>\n  </url>`).join('\n') + '\n</urlset>\n');
+console.log(`sitemap.xml: ${urls.length} адресов`);
 console.log(`Готово: ${pages.length} страниц -> dist/` + (hidden.size ? ` (отложено до даты: ${hidden.size})` : ''));

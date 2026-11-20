@@ -19,7 +19,11 @@ for (const f of htmls) {
   for (const m of h.matchAll(/href="(\/[^"]*)"/g)) { if (/index\.html/.test(m[1])) errs.push(`${rel}: ссылка на index.html ${m[1]}`); if (!exists(m[1])) errs.push(`${rel}: битая ссылка ${m[1]}`); }
 }
 const sm = fs.readFileSync(path.join(dist, 'sitemap.xml'), 'utf8');
-if (!sm.includes('<sitemapindex')) errs.push('sitemap.xml не индекс');
-for (const f of files.filter(f => /sitemap-.*\.xml$/.test(f))) for (const m of fs.readFileSync(f, 'utf8').matchAll(/<loc>https:\/\/sud-pomoshnik\.ru(\/[^<]*)<\/loc>/g)) if (!m[1].endsWith('/') || !exists(m[1])) errs.push(`карта: плохой адрес ${m[1]}`);
+if (!sm.includes('<urlset')) errs.push('sitemap.xml должен быть единым списком адресов (urlset)');
+if (files.some(f => /sitemap-.*\.xml$/.test(f))) errs.push('остались лишние sitemap-*.xml');
+const locs = [...sm.matchAll(/<loc>https:\/\/sud-pomoshnik\.ru(\/[^<]*)<\/loc>/g)].map(m => m[1]);
+for (const u of locs) if (!u.endsWith('/') || !exists(u)) errs.push(`карта: плохой адрес ${u}`);
+const pagesNoindex = htmls.filter(f => fs.readFileSync(f, 'utf8').includes('name="robots" content="noindex"')).length;
+if (locs.length !== htmls.length - pagesNoindex) errs.push(`карта: ${locs.length} адресов, страниц для индекса ${htmls.length - pagesNoindex}`);
 if (errs.length) { console.error(errs.join('\n')); console.error(`\nОШИБОК: ${errs.length}`); process.exit(1); }
-console.log(`OK: ${htmls.length} HTML-страниц, ошибок нет`);
+console.log(`OK: ${htmls.length} HTML-страниц, в sitemap ${locs.length} адресов, ошибок нет`);
